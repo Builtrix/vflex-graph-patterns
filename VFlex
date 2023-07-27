@@ -1,0 +1,55 @@
+PREFIX s4bldg: <https://saref.etsi.org/saref4bldg/>
+PREFIX saref: <https://saref.etsi.org/core/>
+PREFIX ic-data: <http://ontology.tno.nl/interconnect/datapoint#>
+PREFIX om: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ic-tplg: <http://ontology.tno.nl/interconnect/topology#>
+PREFIX time: <http://www.w3.org/2006/time#>
+PREFIX ic-uom: <http://ontology.tno.nl/interconnect/units#>
+
+SELECT ?vFlex ?loc ?Energy ?ctv ?tisv ?tiev ?heatPumpConsumption ?ActivePowerNV ?heatPump ?workingStatus
+WHERE {
+
+  ?vFlex rdf:type saref:Service.
+  ?vFlex ic-data:hasTopologicalAssociation ?loc.
+  ?loc rdf:type ic-tplg:TopologicalLocation.
+  ?loc ic-tplg:isToplogicalAssociationOf <https://www.builtrix.com/interconnect/activepower>.
+
+  ?vFlex saref:makesMeasurement ?Energy.
+  ?Energy rdf:type ic-data:DataPoint.
+
+  ?Energy ic-data:hasUsage ic-data:FlexOffer.
+  ?Energy ic-data:hasUsage ic-data:EnergyEfficiency.
+
+  ?Energy ic-data:hasCreationTime ?ct.
+  ?ct rdf:type time:Instant.
+  ?ct time:inXSDDateTimeStamp ?ctv.
+
+  ?Energy ic-data:hasEffectivePeriod ?ti.
+  ?ti rdf:type time:Interval.
+  ?ti time:hasBeginning ?tis.
+  ?tis time:inXSDDateTimeStamp ?tisv.
+  ?ti time:hasEnd ?tie.
+  ?tie time:inXSDDateTimeStamp ?tiev.
+    
+  ?Energy ic-data:hasUpdateRate ?update .
+  ?update rdf:type time:DurationDescription .
+  ?update time:days ?res_d .
+  ?update time:hours ?res_h .
+  ?update time:minutes ?res_m  .
+  ?update time:seconds ?res_s .
+
+  ?Energy ic-data:containsQuantity ?heatPumpConsumption.
+  ?heatPumpConsumption rdf:type ic-uom:ActivePower.
+  ?heatPumpConsumption om:hasValue ?ActivePowerv.
+  ?ActivePowerv saref:isMeasuredIn om:kiloWatt.
+  ?ActivePowerv om:hasNumericalValue ?ActivePowerNV.
+
+  ?heatPumpConsumption saref:hasState ?workingStatus.
+  ?workingStatus saref:State saref:OffState.
+  ?workingStatus saref:State saref:OnState.
+
+  ?heatPumpConsumption saref:relatesToProperty ?heatPump.
+}
+
