@@ -50,6 +50,6 @@ WHERE {
   ?qap  rdf:type ic-uom:ActivePower .
   ic-uom:ActivePower rdf:type om:Quantity .
   ?qap om:hasValue ?qapv .
-  ?qapv om:hasUnit om:kiloWatt .
+  ?qapv saref:isMeasuredIn om:kiloWatt .
   ?qapv om:hasNumericalValue ?qapnv .
 }
